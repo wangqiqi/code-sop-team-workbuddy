@@ -461,6 +461,16 @@ class GateTest(unittest.TestCase):
         self.assertIn("钩子脚本路径失效", r.stdout)
         self.assertIn("钩子解释器失效", r.stdout)
 
+    def test_43_cp1252_console_does_not_crash(self):
+        """Windows 默认 cp1252 控制台不能把中文闸门输出变成 INTERNAL-ERROR。"""
+        self.plan.unlink()
+        (self.tmp / ".gitignore").unlink()
+        r = self.run_gate("init", env={"PYTHONIOENCODING": "cp1252"})
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("OK", r.stdout)
+        self.assertNotIn("INTERNAL-ERROR", r.stdout + r.stderr)
+        self.assertTrue((self.tmp / ".gitignore").is_file())
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

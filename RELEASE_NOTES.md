@@ -1,12 +1,21 @@
 # 版本发布说明
 
+## v1.5.5（2026-11-24）
+
+修复 Windows 默认 cp1252 控制台下闸门中文输出崩溃，CI 双平台全绿后才发布。
+
+### 本次变化
+
+- `sop_gate.py` 启动时强制 stdout/stderr 为 UTF-8（`errors=replace`），避免 `UnicodeEncodeError` 导致闸门假死。
+- 新增 `test_43_cp1252_console_does_not_crash`，把 GitHub Actions windows-latest 上的真实故障固化为回归断言（44 用例全绿）。
+
 ## v1.5.4（2026-11-24）
 
 新增 GitHub Actions CI/CD：验证通过后自动打包并发布 Release。
 
 ### 本次变化
 
-- 新增 `.github/workflows/ci.yml`：PR / push main 时在 Ubuntu + Windows 双平台跑 schema 校验与 43 用例回归，通过后打包 zip 作为构建产物。
+- 新增 `.github/workflows/ci.yml`：PR / push main 时在 Ubuntu + Windows 双平台跑 schema 校验与 44 用例回归，通过后打包 zip 作为构建产物。
 - 新增 `.github/workflows/release.yml`：推送 `v*` 标签时复用 CI，校验标签与插件版本一致后自动创建/更新 GitHub Release 并上传 `code-sop-team.zip`。
 - 新增 `scripts/validate_package.py`：弥补官方校验器不检查 `members[].name`（en/zh）的缺口，把客户端解析失败固化成 CI 断言。
 - 新增 `scripts/build_package.py`：标准库打包，先校验后压缩，排除 CI/开发脚本与缓存，产物可复现。
@@ -16,7 +25,7 @@
 
 - 13 名成员、8 个技能、14 种人格话术
 - 四道硬闸门：规划闸 `gate-check`、验收闸 `task-verify`、出口闸 `verify`、补丁循环闸 `followup`
-- `sop_gate.py` 闸门脚本、43 个零依赖回归用例
+- `sop_gate.py` 闸门脚本、44 个零依赖回归用例
 - 13 张成员头像 + 1 张团队封面
 
 ### 安装方式

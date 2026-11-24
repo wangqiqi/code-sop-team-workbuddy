@@ -45,6 +45,24 @@ from datetime import date
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Tuple
 
+
+def _force_utf8_stdio() -> None:
+    """强制 stdout/stderr 用 UTF-8，避免 Windows 默认 cp1252 打印中文时崩溃。
+
+    GitHub Actions 的 windows-latest 上 Python 3.11 默认控制台编码是 cp1252；
+    闸门输出全是中文，一旦抛 UnicodeEncodeError，顶层错误处理器又用中文打印，
+    会二次崩溃成 INTERNAL-ERROR——闸门直接挂掉。这里在 import 后立刻重配流，
+    零依赖、跨平台，对 StringIO（单测里捕获输出）静默跳过。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass
+
+
+_force_utf8_stdio()
+
 # ---------------------------------------------------------------------------
 # 常量
 # ---------------------------------------------------------------------------
@@ -836,7 +854,7 @@ def cmd_doctor(root: Path) -> int:
     else:
         print("     硬锁: 未安装 git 钩子（可选，install-hook 开启）")
 
-    # 8.5) 回归测试套件（只报存在性，不在 doctor 里跑——43 个用例要 ~60 秒）
+    # 8.5) 回归测试套件（只报存在性，不在 doctor 里跑——44 个用例要 ~60 秒）
     test_file = exp_root / "tests" / "test_sop_gate.py"
     if test_file.exists():
         print(f"OK   回归测试套件: {test_file}（手动运行: python tests/test_sop_gate.py）")

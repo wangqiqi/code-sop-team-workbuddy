@@ -65,7 +65,7 @@ Team 型（**13 角色，4 常驻 + 9 按需**）：主理人 + 规划/审查/�
 | 层 | 实现 |
 |---|---|
 | 闸门执行 | `bin/sop_gate.py`，Python 标准库、零依赖、Win/Mac/Linux 通吃 |
-| 回归测试 | `tests/test_sop_gate.py`，43 用例、零依赖，改闸门后必跑 |
+| 回归测试 | `tests/test_sop_gate.py`，44 用例、零依赖，改闸门后必跑 |
 | 状态存放 | `<项目根>/.workbuddy/sop/plan.md`，自动探测项目根（`--root` > `SOP_PROJECT_ROOT` > 向上找 `.git` > cwd） |
 | 脚本定位 | 三级探测：`$SOP_GATE` > `~/.workbuddy/plugins/marketplaces/*/plugins/code-sop-team/bin/` > 项目级 `.workbuddy/plugins/*/`，不写死用户名与目录 |
 | 运行时 | **不需要用户自己装 Python**：WorkBuddy 桌面版内置受管 Python（本机 3.13.12，`~/.workbuddy/binaries/python/versions/3.13.12/python.exe`，通常不在 PATH）；普通 Windows 本身不自带 Python。在会话里用当前解释器即可 |
@@ -141,8 +141,12 @@ python sop_gate.py task-verify TASK-002 --evidence "复核人:张三, 订单页 
 
 ## 变更记录
 
+**v1.5.5**（2026-11-24）— 修复 Windows cp1252 控制台崩溃（44 用例全绿）
+- CI 在 windows-latest 上暴露真实缺陷：Python 3.11 默认控制台编码 cp1252，闸门打印中文抛 `UnicodeEncodeError`，顶层错误处理器再用中文打印导致二次崩溃，闸门直接挂掉。
+- `sop_gate.py` 启动时强制 stdout/stderr 用 UTF-8（`errors=replace`），对 StringIO 静默跳过；新增 `test_43` 用 `PYTHONIOENCODING=cp1252` 固化回归。
+
 **v1.5.4**（2026-11-24）— 接入 GitHub Actions CI/CD
-- PR / push main：Ubuntu + Windows 双平台跑 schema 校验与 43 用例回归，通过后自动打包构建产物。
+- PR / push main：Ubuntu + Windows 双平台跑 schema 校验与 44 用例回归，通过后自动打包构建产物。
 - push `v*` 标签：复用 CI，校验标签与插件版本一致后自动创建/更新 Release 并上传安装包。
 - 新增本地校验/打包脚本，补齐仓库 `settings.json`，把客户端解析失败固化为 CI 断言。
 
@@ -234,6 +238,6 @@ python sop_gate.py task-verify TASK-002 --evidence "复核人:张三, 订单页 
 
 ```bash
 python scripts/validate_package.py          # schema 校验
-python tests/test_sop_gate.py               # 43 用例回归
+python tests/test_sop_gate.py               # 44 用例回归
 python scripts/build_package.py             # 生成 dist/code-sop-team.zip
 ```
