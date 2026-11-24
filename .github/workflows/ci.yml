@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_call:
+    outputs:
+      version:
+        description: Version read from .codebuddy-plugin/plugin.json
+        value: ${{ jobs.meta.outputs.version }}
+
+permissions:
+  contents: read
+
+jobs:
+  meta:
+    name: Read version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate schema and read version
+        id: version
+        shell: bash
+        run: |
+          python scripts/validate_package.py --print-version > version.txt
+          echo "version=$(cat version.txt)" >> "$GITHUB_OUTPUT"
+
+  validate:
+    name: Validate on ${{ matrix.os }}
+    needs: meta
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate package schema
+        shell: bash
+        run: python scripts/validate_package.py
+      - name: Run gate regression suite
+        shell: bash
+        run: python tests/test_sop_gate.py
+
+  package:
+    name: Build installable zip
+    needs: [meta, validate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build zip
+        shell: bash
+        run: python scripts/build_package.py --output dist/code-sop-team.zip --expect-version "${{ needs.meta.outputs.version }}"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-sop-team
+          path: dist/code-sop-team.zip
+          if-no-files-found: error
+          retention-days: 7

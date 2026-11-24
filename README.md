@@ -1,5 +1,8 @@
 # 代码工程 SOP 专家团（code-sop-team）
 
+[![CI](https://github.com/wangqiqi/code-sop-team-workbuddy/actions/workflows/ci.yml/badge.svg)](https://github.com/wangqiqi/code-sop-team-workbuddy/actions/workflows/ci.yml)
+[![Release](https://github.com/wangqiqi/code-sop-team-workbuddy/actions/workflows/release.yml/badge.svg)](https://github.com/wangqiqi/code-sop-team-workbuddy/actions/workflows/release.yml)
+
 把"聊完就散"的开发协作变成**先规划、可验收、能连跑**的团队级工程流程。转化自 Super Cursor v5.1.15 的 SOP（`E:\cursor-ai`），面向 WorkBuddy 重新设计。
 
 ## 类型
@@ -138,6 +141,11 @@ python sop_gate.py task-verify TASK-002 --evidence "复核人:张三, 订单页 
 
 ## 变更记录
 
+**v1.5.4**（2026-11-24）— 接入 GitHub Actions CI/CD
+- PR / push main：Ubuntu + Windows 双平台跑 schema 校验与 43 用例回归，通过后自动打包构建产物。
+- push `v*` 标签：复用 CI，校验标签与插件版本一致后自动创建/更新 Release 并上传安装包。
+- 新增本地校验/打包脚本，补齐仓库 `settings.json`，把客户端解析失败固化为 CI 断言。
+
 **v1.5.3**（2026-11-18）— 修复专家中心解析失败（43 用例全绿）
 - `plugin.json` 的 `members[]` 字段由 `displayName` 改为官方运行时要求的 `name`（`{en, zh}`）。此前客户端报「members[0].name 的 en/zh 均为必填」，导致专家团无法加载。
 - `displayDescription.zh` 从 61 字压到 46 字，满足规范的 40–50 字要求，校验脚本不再告警。
@@ -216,8 +224,16 @@ python sop_gate.py task-verify TASK-002 --evidence "复核人:张三, 订单页 
 - 吸收原仓 13 个 skill → 3 个新 skill（quality-checklists / delivery-contracts / release-ops）。
 - 新增 Workflow 0（空项目起步）、Workflow F（长程分层）。
 
-## 打包分享
+## CI/CD 与本地打包
+
+- **PR / push main**：`.github/workflows/ci.yml` 在 Ubuntu + Windows 双平台跑 schema 校验（`scripts/validate_package.py`）与闸门回归（`tests/test_sop_gate.py`）；全绿后由 `scripts/build_package.py` 打包，上传为 Actions 构建产物。
+- **自动发布**：推送 `v<版本号>` 标签（如 `v1.5.4`）触发 `.github/workflows/release.yml`；复用 CI，校验标签与 `.codebuddy-plugin/plugin.json` 的版本一致，然后自动创建/更新 GitHub Release 并上传 `code-sop-team.zip`。
+- 仓库只保留源码；安装包只出现在 Releases 页面，避免「改一行代码要不要重传包」的纠结。
+
+本地等价命令：
 
 ```bash
-python3 scripts/package_expert.py <expert-dir> [output-dir]
+python scripts/validate_package.py          # schema 校验
+python tests/test_sop_gate.py               # 43 用例回归
+python scripts/build_package.py             # 生成 dist/code-sop-team.zip
 ```

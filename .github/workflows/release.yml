@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    name: Validate and package
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    name: Publish GitHub Release
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify tag matches plugin version
+        shell: bash
+        env:
+          VERSION: ${{ needs.ci.outputs.version }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ -z "$VERSION" ]; then
+            echo "CI did not provide a version" >&2
+            exit 1
+          fi
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "Tag '$TAG' does not match plugin version 'v$VERSION'" >&2
+            exit 1
+          fi
+          echo "Tag $TAG matches plugin version."
+
+      - name: Download packaged zip
+        uses: actions/download-artifact@v4
+        with:
+          name: code-sop-team
+          path: dist
+
+      - name: Check asset exists
+        shell: bash
+        run: |
+          test -s dist/code-sop-team.zip
+          ls -lh dist/code-sop-team.zip
+
+      - name: Create or update GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/code-sop-team.zip --clobber
+          else
+            gh release create "$TAG" dist/code-sop-team.zip \
+              --title "$TAG" \
+              --notes-file RELEASE_NOTES.md \
+              --verify-tag
+          fi
