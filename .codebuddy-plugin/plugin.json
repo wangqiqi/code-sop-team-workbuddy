@@ -1,0 +1,271 @@
+{
+  "name": "code-sop-team",
+  "version": "1.5.3",
+  "description": "An engineering SOP expert team that turns ad-hoc coding into a planned, verifiable, autonomous workflow with hard-constraint gates.",
+  "author": {
+    "name": "WorkBuddy User",
+    "email": "user@workbuddy.local"
+  },
+  "agents": [
+    "./agents/code-sop-team-team-lead.md",
+    "./agents/sprint-planner.md",
+    "./agents/code-reviewer.md",
+    "./agents/tech-spiker.md",
+    "./agents/release-engineer.md",
+    "./agents/morale-booster.md",
+    "./agents/engineering-steward.md",
+    "./agents/product-manager.md",
+    "./agents/architect.md",
+    "./agents/qa-engineer.md",
+    "./agents/security-engineer.md",
+    "./agents/ux-designer.md",
+    "./agents/data-engineer.md"
+  ],
+  "skills": [
+    "./skills/sop-gate",
+    "./skills/stack-conventions",
+    "./skills/quality-checklists",
+    "./skills/delivery-contracts",
+    "./skills/release-ops",
+    "./skills/product-spec",
+    "./skills/architecture-design",
+    "./skills/ux-design"
+  ],
+  "expertType": "team",
+  "agentName": "code-sop-team-team-lead",
+  "teamInfo": {
+    "leadAgent": "code-sop-team-team-lead",
+    "memberAgents": [
+      "sprint-planner",
+      "code-reviewer",
+      "release-engineer",
+      "product-manager",
+      "architect",
+      "qa-engineer",
+      "security-engineer",
+      "ux-designer",
+      "data-engineer",
+      "tech-spiker",
+      "morale-booster",
+      "engineering-steward"
+    ]
+  },
+  "displayName": {
+    "en": "Code Engineering SOP Team",
+    "zh": "代码工程 SOP 专家团"
+  },
+  "profession": {
+    "en": "Code Engineering SOP Team",
+    "zh": "代码工程 SOP 专家团"
+  },
+  "displayDescription": {
+    "en": "A 13-role engineering team: requirement framing, architecture, sprint planning, execution, four hard gates, QA and security review, autonomous release.",
+    "zh": "13 人工程团队：需求澄清、架构设计、任务规划、四道硬闸、测试安全走查与自治发版，按需请人。"
+  },
+  "avatar": "avatars/team.png",
+  "categoryId": "10-ProjectQuality",
+  "defaultInitPrompt": {
+    "zh": "我要开发一个功能，请先用规划师冻结目标、拆解任务，等我确认后再执行。",
+    "en": "I want to build a feature. Please freeze the goal and break down tasks first, then wait for my confirmation before execution."
+  },
+  "plugin": "code-sop-team",
+  "tags": [
+    {
+      "en": "Engineering Workflow",
+      "zh": "工程流程"
+    },
+    {
+      "en": "Sprint Planning",
+      "zh": "Sprint 规划"
+    },
+    {
+      "en": "Code Review & QA",
+      "zh": "审查验收"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "I want to build a feature. Please freeze the goal and break down tasks first, then wait for my confirmation before execution.",
+      "zh": "我要开发一个功能，请先用规划师冻结目标、拆解任务，等我确认后再执行。"
+    },
+    {
+      "en": "Review the current changes for merge readiness and list blockers by severity.",
+      "zh": "帮我审查当前改动能不能合并，按严重度列出 Blocker 和 High。"
+    },
+    {
+      "en": "Compare these two technical options and give me a clear recommendation with a task breakdown.",
+      "zh": "这两个技术方案帮我对比一下，给出明确推荐和任务拆分建议。"
+    }
+  ],
+  "members": [
+    {
+      "id": "code-sop-team-team-lead",
+      "name": {
+        "en": "Qi Huolin",
+        "zh": "齐活林"
+      },
+      "profession": {
+        "en": "Delivery Director",
+        "zh": "交付总监"
+      },
+      "avatar": "avatars/code-sop-team-team-lead.png",
+      "role": "lead"
+    },
+    {
+      "id": "sprint-planner",
+      "name": {
+        "en": "Xu Qingchu",
+        "zh": "许清楚"
+      },
+      "profession": {
+        "en": "Sprint Planner",
+        "zh": "Sprint 规划师"
+      },
+      "avatar": "avatars/sprint-planner.png",
+      "role": "member"
+    },
+    {
+      "id": "code-reviewer",
+      "name": {
+        "en": "Yan Guoguan",
+        "zh": "严过关"
+      },
+      "profession": {
+        "en": "Code Reviewer",
+        "zh": "代码审查官"
+      },
+      "avatar": "avatars/code-reviewer.png",
+      "role": "member"
+    },
+    {
+      "id": "release-engineer",
+      "name": {
+        "en": "Bi Dacheng",
+        "zh": "毕达成"
+      },
+      "profession": {
+        "en": "Release Engineer",
+        "zh": "发版工程师"
+      },
+      "avatar": "avatars/release-engineer.png",
+      "role": "member"
+    },
+    {
+      "id": "product-manager",
+      "name": {
+        "en": "Wen Zhixu",
+        "zh": "文知需"
+      },
+      "profession": {
+        "en": "Product Manager",
+        "zh": "产品经理"
+      },
+      "avatar": "avatars/product-manager.png",
+      "role": "member"
+    },
+    {
+      "id": "architect",
+      "name": {
+        "en": "Liang Dingbian",
+        "zh": "梁定边"
+      },
+      "profession": {
+        "en": "Architect",
+        "zh": "架构师"
+      },
+      "avatar": "avatars/architect.png",
+      "role": "member"
+    },
+    {
+      "id": "qa-engineer",
+      "name": {
+        "en": "Zha Bixian",
+        "zh": "查必现"
+      },
+      "profession": {
+        "en": "QA Engineer",
+        "zh": "测试工程师"
+      },
+      "avatar": "avatars/qa-engineer.png",
+      "role": "member"
+    },
+    {
+      "id": "security-engineer",
+      "name": {
+        "en": "Wei Wulou",
+        "zh": "卫无漏"
+      },
+      "profession": {
+        "en": "Security Engineer",
+        "zh": "安全工程师"
+      },
+      "avatar": "avatars/security-engineer.png",
+      "role": "member"
+    },
+    {
+      "id": "ux-designer",
+      "name": {
+        "en": "Yan Keyue",
+        "zh": "颜可悦"
+      },
+      "profession": {
+        "en": "UI/UX Designer",
+        "zh": "UI/UX 设计师"
+      },
+      "avatar": "avatars/ux-designer.png",
+      "role": "member"
+    },
+    {
+      "id": "data-engineer",
+      "name": {
+        "en": "Shi Buyi",
+        "zh": "石不移"
+      },
+      "profession": {
+        "en": "Data Engineer",
+        "zh": "数据工程师"
+      },
+      "avatar": "avatars/data-engineer.png",
+      "role": "member"
+    },
+    {
+      "id": "tech-spiker",
+      "name": {
+        "en": "Gao Jianyuan",
+        "zh": "高见远"
+      },
+      "profession": {
+        "en": "Tech Researcher",
+        "zh": "技术调研员"
+      },
+      "avatar": "avatars/tech-spiker.png",
+      "role": "member"
+    },
+    {
+      "id": "morale-booster",
+      "name": {
+        "en": "Gu Xiaoli",
+        "zh": "古小励"
+      },
+      "profession": {
+        "en": "Morale Booster",
+        "zh": "程序员鼓励师"
+      },
+      "avatar": "avatars/morale-booster.png",
+      "role": "member"
+    },
+    {
+      "id": "engineering-steward",
+      "name": {
+        "en": "Shu Jingran",
+        "zh": "舒井然"
+      },
+      "profession": {
+        "en": "Engineering Steward",
+        "zh": "工程事务官"
+      },
+      "avatar": "avatars/engineering-steward.png",
+      "role": "member"
+    }
+  ]
+}
