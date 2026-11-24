@@ -239,7 +239,9 @@ class GateTest(unittest.TestCase):
             cwd=str(deep), capture_output=True, text=True, encoding="utf-8",
         )
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        self.assertIn(str(self.tmp), r.stdout)
+        # Windows 的 8.3 短路径（RUNNER~1）与 resolve() 后的长路径是同一个目录；
+        # 断言必须比规范化后的路径，否则 CI 上会假失败。
+        self.assertIn(str(self.tmp.resolve()), r.stdout)
 
     def test_22_hook_blocks_unapproved_commit(self):
         self.write_plan(PLAN_OK)
