@@ -47,10 +47,28 @@ jobs:
           python-version: "3.11"
       - name: Validate package schema
         shell: bash
-        run: python scripts/validate_package.py
+        run: |
+          set +e
+          python scripts/validate_package.py 2>&1 | tee validate-output.txt
+          rc=${PIPESTATUS[0]}
+          if [ "$rc" -ne 0 ]; then
+            grep -E '^(ERROR|FAILED):' validate-output.txt | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+          fi
+          exit "$rc"
       - name: Run gate regression suite
         shell: bash
-        run: python tests/test_sop_gate.py
+        run: |
+          set +e
+          python tests/test_sop_gate.py 2>&1 | tee test-output.txt
+          rc=${PIPESTATUS[0]}
+          if [ "$rc" -ne 0 ]; then
+            grep -E '^(FAIL|ERROR):|^Ran |^FAILED|^AssertionError|^Traceback|^  File ' test-output.txt | head -20 | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+          fi
+          exit "$rc"
 
   package:
     name: Build installable zip
