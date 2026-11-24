@@ -57,6 +57,23 @@ jobs:
             done
           fi
           exit "$rc"
+      - name: Preflight init
+        shell: bash
+        run: |
+          python - <<'PY'
+          import subprocess, sys, tempfile
+          from pathlib import Path
+          tmp = Path(tempfile.mkdtemp(prefix="sop-preflight-"))
+          r = subprocess.run(
+              [sys.executable, str(Path("bin/sop_gate.py").resolve()), "init", "--root", str(tmp)],
+              capture_output=True, text=True,
+          )
+          gi = tmp / ".gitignore"
+          msg = f"rc={r.returncode} gitignore={gi.exists()} stdout={r.stdout!r} stderr={r.stderr!r}"
+          print("PREFLIGHT " + msg)
+          if r.returncode != 0 or not gi.exists():
+              print("::error::PREFLIGHT " + msg)
+          PY
       - name: Run gate regression suite
         shell: bash
         run: |
